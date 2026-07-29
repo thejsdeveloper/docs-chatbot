@@ -1,4 +1,5 @@
 api/corpus/
 chroma/
+__pycache__/
 .env
 .venv
