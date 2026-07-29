@@ -1,0 +1,4 @@
+api/corpus/
+chroma/
+.env
+.venv
