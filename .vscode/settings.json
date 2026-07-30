@@ -2,5 +2,12 @@
   "python.defaultInterpreterPath": "${workspaceFolder}/api/.venv/bin/python",
   "python.analysis.extraPaths": ["${workspaceFolder}/api"],
   "python.analysis.autoImportCompletions": true,
-  "python.analysis.typeCheckingMode": "basic"
+  "python.analysis.typeCheckingMode": "basic",
+  "python-envs.pythonProjects": [
+    {
+      "path": "api/rag/chunker.py",
+      "envManager": "ms-python.python:venv",
+      "packageManager": "ms-python.python:pip"
+    }
+  ]
 }
