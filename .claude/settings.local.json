@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import chromadb; print\\(chromadb.__file__\\)\")",
+      "Bash(find / -path /proc -prune -o -name \"types.py\" -path \"*chromadb*\" -print)"
+    ]
+  }
+}
