@@ -60,7 +60,10 @@ async def chat_stream(req: Ask) -> AsyncIterable[ServerSentEvent]:
             async for event in stream:
                 if event.type == "response.output_text.delta":
                     yield ServerSentEvent(data=event.delta, event="token")
-    except Exception as exc:  # log the real thing, show a safe thing
+    # Deliberate catch-all: this is the stream boundary. Anything that escapes
+    # here truncates the SSE response with no error event, so the client would
+    # just see the stream stop. Log the real thing, show a safe thing.
+    except Exception as exc:  # noqa: BLE001
         print(f"stream failed: {exc!r}")
         yield ServerSentEvent(data="Sorry, the answer stream failed.", event="error")
 
