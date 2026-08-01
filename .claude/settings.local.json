@@ -2,7 +2,16 @@
   "permissions": {
     "allow": [
       "Bash(python3 -c \"import chromadb; print\\(chromadb.__file__\\)\")",
-      "Bash(find / -path /proc -prune -o -name \"types.py\" -path \"*chromadb*\" -print)"
+      "Bash(find / -path /proc -prune -o -name \"types.py\" -path \"*chromadb*\" -print)",
+      "Bash(npx shadcn@latest init -d --yes)",
+      "Bash(python3 *)",
+      "Bash(lsof -nP -iTCP -sTCP:LISTEN)",
+      "Bash(curl -sL \"https://api.github.com/repos/reactjs/react.dev/contents/src/content\")",
+      "Bash(tar -xz \"react.dev-main/src/content\")",
+      "Bash(ps *)",
+      "Bash(kill 14161 14122)",
+      "Bash(lsof -nP -iTCP:3000 -iTCP:8000 -sTCP:LISTEN)",
+      "Bash(awk '/<Sandpack>/{f=1} f{print} /<\\\\/Sandpack>/{if\\(f\\)exit}' learn/state-a-components-memory.md)"
     ]
   }
 }
