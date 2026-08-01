@@ -37,10 +37,19 @@ def ingest(
     size: int = 400,
     overlap: int = 50,
     collection: chromadb.Collection | None = None,
+    root: str | Path | None = None,
 ) -> int:
+    """Ingest one file. Returns the number of chunks written.
+
+    `source` is the path relative to the corpus root, not the bare filename:
+    react.dev has nine `index.md` files plus five other duplicated basenames,
+    which would collide on id and silently overwrite each other.
+    """
     collection = collection or get_collection()
-    source = Path(path).name
+    source = str(Path(path).relative_to(root)) if root else Path(path).name
     chunks = chunk_markdown(Path(path).read_text(), size, overlap)
+    if not chunks:
+        return 0
     collection.upsert(
         ids=[f"{source}:{i}" for i in range(len(chunks))],
         embeddings=cast(Embeddings, embed(chunks)),
@@ -48,7 +57,7 @@ def ingest(
         metadatas=[{"source": source, "position": i} for i in range(len(chunks))],
     )
     print(f"ingested {len(chunks)} chunks from {source}")
-    return collection.count()
+    return len(chunks)
 
 
 def search(
