@@ -11,7 +11,9 @@
       "Bash(ps *)",
       "Bash(kill 14161 14122)",
       "Bash(lsof -nP -iTCP:3000 -iTCP:8000 -sTCP:LISTEN)",
-      "Bash(awk '/<Sandpack>/{f=1} f{print} /<\\\\/Sandpack>/{if\\(f\\)exit}' learn/state-a-components-memory.md)"
+      "Bash(awk '/<Sandpack>/{f=1} f{print} /<\\\\/Sandpack>/{if\\(f\\)exit}' learn/state-a-components-memory.md)",
+      "Bash(uv run *)",
+      "WebSearch"
     ]
   }
 }
