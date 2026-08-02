@@ -51,6 +51,37 @@ def test_four_backtick_fence_does_not_desync():
     assert out.endswith("## After") and "{/*" not in out
 
 
+def test_strips_relative_links_keeps_label():
+    """react.dev's own routes 404 against our origin once copied into an answer."""
+    assert clean_markdown("see [`useState`](/reference/react/useState) here") == (
+        "see `useState` here"
+    )
+
+
+def test_strips_bare_fragment_links():
+    """`#section` refers to the page it was authored on, which no reader is on."""
+    assert clean_markdown("an [example](#adding-to-an-array) of this") == (
+        "an example of this"
+    )
+
+
+def test_keeps_absolute_links():
+    """2,496 links point off-site and work fine; only relative ones are broken."""
+    md = "[destructuring](https://javascript.info/destructuring-assignment)"
+    assert clean_markdown(md) == md
+
+
+def test_strips_relative_images_to_alt_text():
+    assert clean_markdown("![Default exports](/images/docs/i_import.png)") == (
+        "Default exports"
+    )
+
+
+def test_does_not_touch_links_inside_code_fences():
+    md = "```js\nfetch('/api/thing')\n```"
+    assert "fetch('/api/thing')" in clean_markdown(md)
+
+
 def test_chunks_carry_the_page_title():
     chunks = chunk_markdown(
         "---\ntitle: useState\n---\n\n## Reference {/*reference*/}\n\n" + "word " * 200

@@ -36,6 +36,12 @@ _CHROME_TAG = re.compile(rf"</?(?:{_NAMES})\b[^>]*/?>")
 # the element would corrupt the sentence. Keep the inner text.
 _CODESTEP = re.compile(r"<CodeStep\b[^>]*>(.*?)</CodeStep>", re.DOTALL)
 _ANCHOR = re.compile(r"\s*\{/\*.*?\*/\}")
+# Links written for react.dev's own routing: `/learn/x` and `#section` only
+# resolve against the site they were authored on. Copied into a chat answer
+# they point at our own origin and 404 (or, for `#section`, at nothing at all,
+# since the reader isn't on the page the fragment refers to). Keep the label,
+# drop the target. Absolute links are left alone -- they still work.
+_RELATIVE_LINK = re.compile(r"!?\[([^\]]*)\]\([/#][^)]*\)")
 _FRONTMATTER = re.compile(r"\A---\n(.*?)\n---\n", re.DOTALL)
 _TITLE = re.compile(r"^title:\s*(.+?)\s*$", re.MULTILINE)
 _ANY_KEY = re.compile(r"^[A-Za-z][\w-]*:\s*(.+?)\s*$", re.MULTILINE)
@@ -59,6 +65,7 @@ def _split_frontmatter(text: str) -> tuple[str | None, str]:
 def _clean_prose(text: str) -> str:
     text = _CODESTEP.sub(r"\1", text)
     text = _CHROME_TAG.sub("", text)
+    text = _RELATIVE_LINK.sub(r"\1", text)
     return "\n".join(
         _ANCHOR.sub("", line) if line.startswith("#") else line
         for line in text.split("\n")
