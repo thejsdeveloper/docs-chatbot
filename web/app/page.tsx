@@ -1,12 +1,12 @@
 "use client";
 
 import {
-  BookOpenIcon,
-  CodeIcon,
+  BoxIcon,
+  ListIcon,
   PlusIcon,
-  RocketIcon,
+  RepeatIcon,
+  ServerIcon,
   SparkleIcon,
-  WrenchIcon,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import {
@@ -71,24 +71,24 @@ function AssistantSources({ sources }: { sources: ChatMessage["sources"] }) {
 
 const SUGGESTIONS = [
   {
-    icon: RocketIcon,
-    label: "How do I get started?",
-    prompt: "How do I get started with this project?",
+    icon: RepeatIcon,
+    label: "Effects running twice",
+    prompt: "Why does my Effect run twice on mount?",
   },
   {
-    icon: CodeIcon,
-    label: "Show an API example",
-    prompt: "Show me a code example for the main API.",
+    icon: ListIcon,
+    label: "Updating array state",
+    prompt: "How do I update state in an array?",
   },
   {
-    icon: WrenchIcon,
-    label: "Configuration options",
-    prompt: "What configuration options are available?",
+    icon: ServerIcon,
+    label: "Server Components",
+    prompt: "What are Server Components?",
   },
   {
-    icon: BookOpenIcon,
-    label: "Explain the architecture",
-    prompt: "Explain how the project is architected.",
+    icon: BoxIcon,
+    label: "When to use useRef",
+    prompt: "When do I need useRef?",
   },
 ];
 
@@ -148,7 +148,7 @@ export default function Home() {
           </span>
           <div className="flex flex-col leading-tight">
             <h1 className="font-heading font-semibold text-foreground text-lg">
-              Docs Chatbot
+              React Docs Chatbot
             </h1>
             <span className="flex items-center gap-1.5 text-muted-foreground text-xs">
               <span className="relative flex size-1.5">
@@ -214,10 +214,10 @@ export default function Home() {
                   <SparkleIcon className="size-7 text-primary-foreground" />
                 </span>
                 <h2 className="font-heading font-semibold text-2xl text-foreground tracking-tight">
-                  Ask anything about the docs
+                  Ask anything about React
                 </h2>
                 <p className="mx-auto max-w-sm text-muted-foreground text-sm">
-                  Get instant, sourced answers pulled straight from the
+                  Get instant, sourced answers pulled straight from the React
                   documentation.
                 </p>
               </div>
@@ -258,7 +258,7 @@ export default function Home() {
         </PromptInputFooter>
       </PromptInput>
       <p className="pt-2 text-center text-muted-foreground text-xs">
-        Docs Chatbot can make mistakes. Check sources for important info.
+        React Docs Chatbot can make mistakes. Check sources for important info.
       </p>
     </div>
   );

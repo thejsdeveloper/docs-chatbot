@@ -27,7 +27,7 @@ async def lifespan(app: FastAPI):
     resources.clear()
 
 
-app = FastAPI(title="Docs Chatbot", lifespan=lifespan)
+app = FastAPI(title="React Docs Chatbot", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,

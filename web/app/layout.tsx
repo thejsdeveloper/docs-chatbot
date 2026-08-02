@@ -19,8 +19,8 @@ const codeFont = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Docs Chatbot",
-  description: "Ask questions about your documentation",
+  title: "React Docs Chatbot",
+  description: "Ask questions about the React documentation",
 };
 
 export default function RootLayout({
