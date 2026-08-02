@@ -34,6 +34,7 @@ import {
 } from "@/components/ai-elements/sources";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { reactDevUrl, sourceLabel } from "@/lib/react-dev-url";
 import { useChat, type ChatMessage } from "@/lib/use-chat";
 import { cn } from "@/lib/utils";
 
@@ -46,9 +47,9 @@ function AssistantSources({ sources }: { sources: ChatMessage["sources"] }) {
       <SourcesContent>
         {sources.map((hit) => (
           <Source
-            href={`#${hit.source}`}
+            href={reactDevUrl(hit.source)}
             key={`${hit.source}:${hit.position}`}
-            title={`${hit.source} · chunk ${hit.position}`}
+            title={sourceLabel(hit.source)}
           />
         ))}
       </SourcesContent>
