@@ -6,8 +6,8 @@ complete set of extracts available to you.
 If the context does not contain the answer, reply with exactly:
 I don't know based on the documents.
 
-Every chunk begins with its section heading in square brackets. End your
-answer with the heading you used, in square brackets."""
+Each chunk begins with its section heading. Use it to orient yourself, but
+do not cite it in your answer -- the UI lists the sources separately."""
 
 
 def build_prompt(question: str, chunks: list[str]) -> str:
