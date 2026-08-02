@@ -36,7 +36,6 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { reactDevUrl, sourceLabel } from "@/lib/react-dev-url";
 import { useChat, type ChatMessage } from "@/lib/use-chat";
-import { cn } from "@/lib/utils";
 
 function AssistantSources({ sources }: { sources: ChatMessage["sources"] }) {
   if (!sources || sources.length === 0) return null;
