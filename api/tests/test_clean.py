@@ -89,3 +89,34 @@ def test_chunks_carry_the_page_title():
         "---\ntitle: useState\n---\n\n## Reference {/*reference*/}\n\n" + "word " * 200
     )
     assert chunks and all(c.startswith("useState > Reference") for c in chunks)
+
+
+def test_recovers_recipes_title_as_a_heading():
+    """The 24 titleText values are the corpus's only comparison signposts, and
+    the blanket chrome rule used to delete them along with the tag."""
+    out = clean_markdown(
+        '<Recipes titleText="Reading a Promise with use vs fetching in an Effect"'
+        ' titleId="examples-promise">\n\nbody\n\n</Recipes>\n'
+    )
+    assert "### Reading a Promise with use vs fetching in an Effect" in out
+    assert "Recipes" not in out
+    assert "titleId" not in out
+
+
+def test_recipes_without_titletext_is_still_dropped():
+    out = clean_markdown("<Recipes>\n\nbody\n\n</Recipes>\n")
+    assert out == "body"
+
+
+def test_h4_headings_reach_the_breadcrumb():
+    """react.dev states its comparisons at h4. Stopping at ### labelled these
+    chunks with the other side of the comparison."""
+    chunks = chunk_markdown(
+        "---\ntitle: use\n---\n\n### Reading a Promise {/*a*/}\n\n"
+        "#### Fetching data with `useEffect` {/*b*/}\n\n" + "word " * 200
+    )
+    assert chunks
+    assert all(
+        c.startswith("use > Reading a Promise > Fetching data with `useEffect`")
+        for c in chunks
+    )

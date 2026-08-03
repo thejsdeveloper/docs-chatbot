@@ -59,6 +59,19 @@ CHROME = [
 _NAMES = "|".join(CHROME)
 # `[^>]*` spans newlines already, which covers the few multi-line attribute lists.
 _CHROME_TAG = re.compile(rf"</?(?:{_NAMES})\b[^>]*/?>")
+# `<Recipes>` is the one chrome tag whose *attribute* is documentation. Its 24
+# titleText values are the corpus's only comparison signposts -- "Reading a
+# Promise with use vs fetching in an Effect", "The difference between
+# useCallback and declaring a function directly" -- and they are the phrasing
+# people actually ask "why X over Y" in. Deleting the tag with the blanket rule
+# below threw them away, so recover the value as a heading first.
+#
+# `###`, not `####`: all 57 headings inside Recipes blocks are `####`, so a
+# `####` title would be overwritten by its own first child in the breadcrumb
+# rather than nesting above it. The cost is that the handful of trailing
+# paragraphs after a `</Recipes>` inherit this title instead of the enclosing
+# one -- a less precise breadcrumb, not a wrong one.
+_RECIPES_TITLE = re.compile(r'<Recipes\b[^>]*\btitleText="([^"]*)"[^>]*>')
 # CodeStep is the one inline component: it wraps mid-sentence text, so deleting
 # the element would corrupt the sentence. Keep the inner text.
 _CODESTEP = re.compile(r"<CodeStep\b[^>]*>(.*?)</CodeStep>", re.DOTALL)
@@ -91,6 +104,8 @@ def _split_frontmatter(text: str) -> tuple[str | None, str]:
 
 def _clean_prose(text: str) -> str:
     text = _CODESTEP.sub(r"\1", text)
+    # Before the blanket strip, which would take the title with the tag.
+    text = _RECIPES_TITLE.sub(r"\n### \1\n", text)
     text = _CHROME_TAG.sub("", text)
     text = _RELATIVE_LINK.sub(r"\1", text)
     return "\n".join(

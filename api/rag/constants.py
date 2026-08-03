@@ -19,7 +19,16 @@ DISTANCE_SPACE = "cosine"
 # --- Chunking ---------------------------------------------------------------
 CHUNK_SIZE = 400
 CHUNK_OVERLAP = 50
-HEADERS_TO_SPLIT_ON = [("#", "title"), ("##", "section"), ("###", "subsection")]
+# `####` earns its place: react.dev states its comparisons at h4 ("Fetching
+# data with `useEffect`"). Stopping at `###` left those chunks labelled with the
+# *other* side of the comparison ("Reading a Promise with `use`"), so the
+# breadcrumb mislabelled them rather than merely omitting detail.
+HEADERS_TO_SPLIT_ON = [
+    ("#", "title"),
+    ("##", "section"),
+    ("###", "subsection"),
+    ("####", "subsubsection"),
+]
 
 # --- Retrieval --------------------------------------------------------------
 # `search()`'s own default; the API asks for more because the answer prompt has
