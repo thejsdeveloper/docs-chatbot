@@ -54,7 +54,7 @@ A **GenAI** chat app built on a **RAG** pipeline over the [react.dev](https://re
 
 ```sh
 echo "OPENROUTER_API_KEY=sk-or-..." > api/.env
-make setup     # fetch the docs, then embed them  (~1.5¢ in embedding calls)
+make setup     # fetch the docs, embed them, install the hook  (~1.5¢ in embedding calls)
 make dev       # API on :8000, web on :3000
 ```
 
@@ -65,13 +65,14 @@ Open **http://localhost:3000** and ask something.
 
 ### Commands
 
-| Command       | What it does                                                   |
-| :------------ | :------------------------------------------------------------- |
-| `make dev`    | Runs the API (uvicorn, reload) and the web dev server together |
-| `make fetch`  | Re-downloads react.dev's docs into `api/corpus/`               |
-| `make ingest` | Cleans, chunks and embeds `api/corpus/` into `api/chroma/`     |
-| `make setup`  | `fetch` + `ingest`, for a fresh clone                          |
-| `make test`   | `pytest` + `ruff check` in `api/`                              |
+| Command       | What it does                                                     |
+| :------------ | :--------------------------------------------------------------- |
+| `make dev`    | Runs the API (uvicorn, reload) and the web dev server together   |
+| `make fetch`  | Re-downloads react.dev's docs into `api/corpus/`                 |
+| `make ingest` | Cleans, chunks and embeds `api/corpus/` into `api/chroma/`       |
+| `make hooks`  | Points `core.hooksPath` at `.githooks/` (see [Tests](#-tests))   |
+| `make setup`  | `fetch` + `ingest` + `hooks`, for a fresh clone                  |
+| `make test`   | `pytest` + `ruff` in `api/`, `vitest` in `web/`                  |
 
 > [!TIP]
 > Ingestion is idempotent: chunk ids are `<corpus-relative-path>:<index>`, written with `upsert`. Shrinking a source file does leave its orphaned tail chunks behind, so delete `api/chroma/` when you want a guaranteed-clean rebuild.
@@ -136,7 +137,8 @@ web/                 Next.js 16 + React 19 + Tailwind v4 chat UI
   components/          shadcn/ui primitives + ai-elements chat components
 
 docs/                demo recording + poster frame
-Makefile             dev / fetch / ingest / setup / test
+.githooks/           pre-commit: lints and tests what the commit touched
+Makefile             dev / fetch / ingest / hooks / setup / test
 ```
 
 ---
@@ -239,10 +241,26 @@ Two smaller choices in the same area:
 ## 🧪 Tests
 
 ```sh
-make test          # or: cd api && uv run pytest
+make test          # both suites: pytest + ruff in api/, vitest in web/
 ```
 
-`api/tests/test_clean.py` covers the cleaning rules above: frontmatter titles, anchor stripping, chrome removal, and the fence handling that keeps JSX examples intact.
+Neither suite needs an API key or the network, and together they run in a few seconds.
+
+`api/tests/test_clean.py` covers the cleaning rules above: frontmatter titles, anchor stripping, chrome removal, and the fence handling that keeps JSX examples intact. `web/` uses vitest + Testing Library over the SSE parser and the chat components.
+
+### The pre-commit hook
+
+`make hooks` (included in `make setup`) points `core.hooksPath` at `.githooks/`. The hook checks only the project the commit actually touched — an `api/`-only commit never starts npm, a `web/`-only commit never starts Python:
+
+| Staged      | Runs                                                            |
+| :---------- | :--------------------------------------------------------------- |
+| `api/**`    | `ruff check` + `ruff format --check` on staged files, then `pytest` |
+| `web/**`    | `eslint` on staged files, then `tsc --noEmit` and `vitest`      |
+
+Linters run on the staged files only; the suites are whole-project by nature, since a shared change breaks tests in files it never touched.
+
+> [!WARNING]
+> The checks read the **working tree, not the index**. A partially staged commit (`git add -p`) is checked as the files currently read on disk, so a hook pass is not a guarantee about what actually lands. It's fast local feedback, not a gate — it's opt-in per clone and `--no-verify` walks past it.
 
 ---
 
