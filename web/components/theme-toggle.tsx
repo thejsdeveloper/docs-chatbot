@@ -2,14 +2,23 @@
 
 import { MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
+
+/** The server has no theme to resolve, so the toggle renders as a blank slot
+ * until hydration. Asking the store whether we are client-side answers that in
+ * the first render rather than in an effect after it. */
+const NEVER_CHANGES = () => () => {};
+const useHydrated = () =>
+  useSyncExternalStore(
+    NEVER_CHANGES,
+    () => true,
+    () => false
+  );
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
+  const mounted = useHydrated();
 
   if (!mounted) {
     return <div className="size-9" />;
