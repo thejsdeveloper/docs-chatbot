@@ -16,5 +16,5 @@ setup: fetch ingest hooks  # one command for a fresh clone
 	@echo "ready. now run: make dev"
 
 test:                      # both suites. neither needs a key or the network
-	cd api && uv run pytest && uv run ruff check .
+	cd api && uv run pytest && uv run ruff check . && uv run ruff format --check .
 	cd web && npm test

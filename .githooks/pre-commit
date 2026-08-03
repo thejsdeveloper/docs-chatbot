@@ -39,19 +39,26 @@ if [ -n "$(staged api 'api/')" ]; then
   if [ -n "$py" ]; then
     # shellcheck disable=SC2086 # deliberate word splitting into an arg list
     (cd api && uv run ruff check $py) || fail "ruff check"
+    # --check reports, never rewrites: a hook that edits files under you
+    # would leave the commit and the working tree disagreeing.
+    # shellcheck disable=SC2086
+    (cd api && uv run ruff format --check $py) || fail "ruff format"
   fi
   (cd api && uv run pytest -q) || fail "pytest"
 fi
 
 # --- web ---------------------------------------------------------------------
 if [ -n "$(staged web 'web/')" ]; then
+  # node_modules/.bin, not npx: npx silently downloads a package it cannot
+  # resolve locally, so a missing install becomes a slow network fetch of
+  # some other version instead of an error. These are all devDependencies.
   ts=$(staged web 'web/*.ts' 'web/*.tsx')
   if [ -n "$ts" ]; then
     # shellcheck disable=SC2086
-    (cd web && npx eslint $ts) || fail "eslint"
+    (cd web && node_modules/.bin/eslint $ts) || fail "eslint"
   fi
-  (cd web && npx tsc --noEmit) || fail "tsc"
-  (cd web && npx vitest run) || fail "vitest"
+  (cd web && node_modules/.bin/tsc --noEmit) || fail "tsc"
+  (cd web && node_modules/.bin/vitest run) || fail "vitest"
 fi
 
 if [ "$status" -ne 0 ]; then
