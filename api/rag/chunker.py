@@ -7,18 +7,21 @@ from langchain_text_splitters import (
 )
 
 from rag.clean import clean_markdown
+from rag.constants import CHUNK_OVERLAP, CHUNK_SIZE, HEADERS_TO_SPLIT_ON
 
 
 def getSections(text: str):
     markdown_header_splitter = MarkdownHeaderTextSplitter(
-        headers_to_split_on=[("#", "title"), ("##", "section"), ("###", "subsection")],
+        headers_to_split_on=HEADERS_TO_SPLIT_ON,
         strip_headers=True,
     )
 
     return markdown_header_splitter.split_text(text)
 
 
-def chunk_markdown(text: str, size: int = 400, overlap: int = 50) -> list[str]:
+def chunk_markdown(
+    text: str, size: int = CHUNK_SIZE, overlap: int = CHUNK_OVERLAP
+) -> list[str]:
     sections = getSections(clean_markdown(text))
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=size, chunk_overlap=overlap

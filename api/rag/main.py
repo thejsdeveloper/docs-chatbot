@@ -9,12 +9,18 @@ from openai import AsyncOpenAI
 from pydantic import BaseModel
 
 from rag.answer import SYSTEM, build_prompt
+from rag.constants import (
+    CHAT_K,
+    CHAT_MODEL,
+    CORS_ORIGINS,
+    MAX_OUTPUT_TOKENS,
+    OPENROUTER_BASE_URL,
+)
 from rag.store import get_collection, search
 
-MODEL = "anthropic/claude-haiku-4.5"
 resources: dict = {}
 llm = AsyncOpenAI(
-    base_url="https://openrouter.ai/api/v1",
+    base_url=OPENROUTER_BASE_URL,
     api_key=os.environ["OPENROUTER_API_KEY"],
 )
 
@@ -31,7 +37,7 @@ app = FastAPI(title="React Docs Chatbot", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=CORS_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -39,7 +45,7 @@ app.add_middleware(
 
 class Ask(BaseModel):
     question: str
-    k: int = 4
+    k: int = CHAT_K
 
 
 @app.get("/health")
@@ -55,7 +61,10 @@ async def chat_stream(req: Ask) -> AsyncIterable[ServerSentEvent]:
 
     try:
         async with llm.responses.stream(
-            model=MODEL, max_output_tokens=800, instructions=SYSTEM, input=prompt
+            model=CHAT_MODEL,
+            max_output_tokens=MAX_OUTPUT_TOKENS,
+            instructions=SYSTEM,
+            input=prompt,
         ) as stream:
             async for event in stream:
                 if event.type == "response.output_text.delta":

@@ -6,6 +6,14 @@ from chromadb.api.types import Embeddings
 from pydantic import BaseModel
 
 from rag.chunker import chunk_markdown
+from rag.constants import (
+    CHROMA_PATH,
+    CHUNK_OVERLAP,
+    CHUNK_SIZE,
+    COLLECTION_NAME,
+    DEFAULT_K,
+    DISTANCE_SPACE,
+)
 from rag.embeddings import embed
 
 _client = None
@@ -26,16 +34,16 @@ def get_collection() -> chromadb.Collection:
     """Open (once) and return the collection. Called from lifespan"""
     global _client
     if _client is None:
-        _client = chromadb.PersistentClient(path="./chroma")
+        _client = chromadb.PersistentClient(path=CHROMA_PATH)
     return _client.get_or_create_collection(
-        "docs", configuration={"hnsw": {"space": "cosine"}}
+        COLLECTION_NAME, configuration={"hnsw": {"space": DISTANCE_SPACE}}
     )
 
 
 def ingest(
     path: str,
-    size: int = 400,
-    overlap: int = 50,
+    size: int = CHUNK_SIZE,
+    overlap: int = CHUNK_OVERLAP,
     collection: chromadb.Collection | None = None,
     root: str | Path | None = None,
 ) -> int:
@@ -62,7 +70,7 @@ def ingest(
 
 def search(
     question: str,
-    k: int = 3,
+    k: int = DEFAULT_K,
     where: dict | None = None,
     collection: chromadb.Collection | None = None,
 ) -> list[Hit]:
