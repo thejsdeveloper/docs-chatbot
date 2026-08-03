@@ -19,14 +19,41 @@ import re
 # Doc-site chrome. The tag is noise; whatever it wraps is usually the caveat or
 # gotcha people actually ask about, so we drop the tag and keep the body.
 CHROME = [
-    "Sandpack", "SandpackRSC", "SandpackWithHTMLOutput",
-    "Intro", "Note", "Pitfall", "DeepDive", "Recap", "YouWillLearn", "LearnMore",
-    "Solution", "Hint", "Challenges", "Recipes", "Recipe", "InlineToc",
-    "TerminalBlock", "ConsoleBlock", "ConsoleBlockMulti", "ConsoleLogLine",
-    "Diagram", "DiagramGroup", "Illustration", "IllustrationBlock",
-    "YouTubeIframe", "TeamMember", "BlogCard", "Math", "MathI",
-    "Canary", "CanaryBadge", "Experimental", "ExperimentalBadge",
-    "Deprecated", "Wip",
+    "Sandpack",
+    "SandpackRSC",
+    "SandpackWithHTMLOutput",
+    "Intro",
+    "Note",
+    "Pitfall",
+    "DeepDive",
+    "Recap",
+    "YouWillLearn",
+    "LearnMore",
+    "Solution",
+    "Hint",
+    "Challenges",
+    "Recipes",
+    "Recipe",
+    "InlineToc",
+    "TerminalBlock",
+    "ConsoleBlock",
+    "ConsoleBlockMulti",
+    "ConsoleLogLine",
+    "Diagram",
+    "DiagramGroup",
+    "Illustration",
+    "IllustrationBlock",
+    "YouTubeIframe",
+    "TeamMember",
+    "BlogCard",
+    "Math",
+    "MathI",
+    "Canary",
+    "CanaryBadge",
+    "Experimental",
+    "ExperimentalBadge",
+    "Deprecated",
+    "Wip",
 ]
 
 _NAMES = "|".join(CHROME)
@@ -55,7 +82,7 @@ def _split_frontmatter(text: str) -> tuple[str | None, str]:
     match = _FRONTMATTER.match(text)
     if not match:
         return None, text
-    block, rest = match.group(1), text[match.end():]
+    block, rest = match.group(1), text[match.end() :]
     # The DOM component pages key on the tag name (`meta: "<meta>"`) rather
     # than `title`, so fall back to the first key's value.
     found = _TITLE.search(block) or _ANY_KEY.search(block)

@@ -25,7 +25,9 @@ def test_drops_chrome_but_keeps_body():
 
 def test_keeps_jsx_inside_code_fences():
     """297 capitalised tags live inside fences as React examples, not chrome."""
-    out = clean_markdown("<Sandpack>\n\n```js\n<Suspense><Note /></Suspense>\n```\n\n</Sandpack>\n")
+    out = clean_markdown(
+        "<Sandpack>\n\n```js\n<Suspense><Note /></Suspense>\n```\n\n</Sandpack>\n"
+    )
     assert "<Suspense><Note /></Suspense>" in out
     assert "<Sandpack>" not in out
 
