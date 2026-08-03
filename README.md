@@ -186,16 +186,16 @@ curl -N http://localhost:8000/chat/stream \
 | `OPENROUTER_API_KEY`       | `api/.env` _(gitignored)_ | **Required.** Used for embeddings and for chat completions |
 | `NEXT_PUBLIC_API_BASE_URL` | `web/.env.local`          | API origin; defaults to `http://localhost:8000`            |
 
-Models and retrieval knobs live in code:
+Models and retrieval knobs live in code, all of them in `rag/constants.py`:
 
-| Setting              | Value                           | Where                         |
-| :------------------- | :------------------------------ | :---------------------------- |
-| Embedding model      | `openai/text-embedding-3-small` | `rag/embeddings.py`           |
-| Chat model           | `anthropic/claude-haiku-4.5`    | `rag/main.py`                 |
-| Max output tokens    | `800`                           | `rag/main.py`                 |
-| Chunk size / overlap | `400` / `50` chars              | `rag/store.ingest`            |
-| Default `k`          | `4` (API), `3` (`search()`)     | `rag/main.py`, `rag/store.py` |
-| Distance metric      | cosine                          | `rag/store.get_collection`    |
+| Setting              | Value                           | Constant                     |
+| :------------------- | :------------------------------ | :--------------------------- |
+| Embedding model      | `openai/text-embedding-3-small` | `EMBED_MODEL`                |
+| Chat model           | `anthropic/claude-haiku-4.5`    | `CHAT_MODEL`                 |
+| Max output tokens    | `800`                           | `MAX_OUTPUT_TOKENS`          |
+| Chunk size / overlap | `400` / `50` chars              | `CHUNK_SIZE`, `CHUNK_OVERLAP` |
+| Default `k`          | `4` (API), `3` (`search()`)     | `CHAT_K`, `DEFAULT_K`        |
+| Distance metric      | cosine                          | `DISTANCE_SPACE`             |
 
 ---
 
@@ -264,6 +264,30 @@ Linters run on the staged files only; the suites are whole-project by nature, si
 
 ---
 
+## ⚖️ Trade-offs and what's next
+
+Things left undone on purpose, and why.
+
+**Retrieval is untuned.** No reranking, no hybrid search, no tuned `k` or chunk size. Not an oversight: there is no eval set here, so I had no way to know whether a change helped. Tuning on the strength of a few eyeballed answers is guessing with extra steps. An eval set comes first, and then the knobs are worth turning.
+
+**One replica only.** Chroma's `PersistentClient` writes to a local directory, so the API cannot be scaled horizontally as it stands. Fine for a single-box demo; a hosted vector store is the swap if it ever needs more.
+
+**No auth on `/chat/stream`.** The endpoint spends money on every call and anyone who can reach it can spend it. It is bound to localhost with CORS locked to `:3000`, which is enough for local use and not close to enough for a public deployment. Auth plus a per-caller rate limit is the minimum before it goes anywhere.
+
+**No multi-turn memory.** Each question is retrieved and answered on its own, so follow-ups like "why?" or "what about in a class component?" lose the thread. Fixing it properly means rewriting the follow-up into a standalone query before retrieval, which is its own retrieval problem.
+
+**Ingestion has no delete pass.** `upsert` keyed on `<path>:<index>` means a source file that shrinks leaves its orphaned tail chunks in the index. Documented as "delete `api/chroma/`" rather than solved.
+
+---
+
+## 📄 Licence
+
+This project's code is [MIT licensed](LICENSE).
+
+The corpus under `api/corpus/` is fetched from [reactjs/react.dev](https://github.com/reactjs/react.dev) and is not part of this repository. React's documentation is licensed **[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)**, and any answer this app produces is derived from it.
+
+---
+
 <div align="center">
-<sub>Docs sourced from <a href="https://github.com/reactjs/react.dev">reactjs/react.dev</a> · Answers can be wrong, so check the cited sources.</sub>
+<sub>Docs sourced from <a href="https://github.com/reactjs/react.dev">reactjs/react.dev</a>, licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> · Answers can be wrong, so check the cited sources.</sub>
 </div>
