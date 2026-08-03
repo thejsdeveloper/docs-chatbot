@@ -2,6 +2,7 @@ import os
 from collections.abc import AsyncIterable
 from contextlib import asynccontextmanager
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.sse import EventSourceResponse, ServerSentEvent
@@ -18,11 +19,27 @@ from rag.constants import (
 )
 from rag.store import get_collection, search
 
+# Stated here rather than inherited from `rag.embeddings`' import side effect:
+# the key below is this module's dependency, so this module loads the .env.
+load_dotenv()
+
 resources: dict = {}
-llm = AsyncOpenAI(
-    base_url=OPENROUTER_BASE_URL,
-    api_key=os.environ["OPENROUTER_API_KEY"],
-)
+_llm: AsyncOpenAI | None = None
+
+
+def get_llm() -> AsyncOpenAI:
+    """Built on first use, not at import. Mirrors `embeddings.get_client()`.
+
+    Importing this module must not require a key, so that `TestClient(app)`
+    and offline schema generation work without one.
+    """
+    global _llm
+    if _llm is None:
+        _llm = AsyncOpenAI(
+            base_url=OPENROUTER_BASE_URL,
+            api_key=os.environ["OPENROUTER_API_KEY"],
+        )
+    return _llm
 
 
 @asynccontextmanager
@@ -60,7 +77,7 @@ async def chat_stream(req: Ask) -> AsyncIterable[ServerSentEvent]:
     prompt = build_prompt(req.question, [h.text for h in hits])
 
     try:
-        async with llm.responses.stream(
+        async with get_llm().responses.stream(
             model=CHAT_MODEL,
             max_output_tokens=MAX_OUTPUT_TOKENS,
             instructions=SYSTEM,
