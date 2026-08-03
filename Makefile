@@ -11,5 +11,6 @@ ingest:                    # when the corpus changes. costs money
 setup: fetch ingest        # one command for a fresh clone
 	@echo "ready. now run: make dev"
 
-test:
+test:                      # both suites. neither needs a key or the network
 	cd api && uv run pytest && uv run ruff check .
+	cd web && npm test
