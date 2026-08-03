@@ -13,7 +13,9 @@
       "Bash(lsof -nP -iTCP:3000 -iTCP:8000 -sTCP:LISTEN)",
       "Bash(awk '/<Sandpack>/{f=1} f{print} /<\\\\/Sandpack>/{if\\(f\\)exit}' learn/state-a-components-memory.md)",
       "Bash(uv run *)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)"
     ]
   }
 }
