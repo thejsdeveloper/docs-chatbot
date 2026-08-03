@@ -65,13 +65,13 @@ Open **http://localhost:3000** and ask something.
 
 ### Commands
 
-| Command | What it does |
-| :--- | :--- |
-| `make dev` | Runs the API (uvicorn, reload) and the web dev server together |
-| `make fetch` | Re-downloads react.dev's docs into `api/corpus/` |
-| `make ingest` | Cleans, chunks and embeds `api/corpus/` into `api/chroma/` |
-| `make setup` | `fetch` + `ingest`, for a fresh clone |
-| `make test` | `pytest` + `ruff check` in `api/` |
+| Command       | What it does                                                   |
+| :------------ | :------------------------------------------------------------- |
+| `make dev`    | Runs the API (uvicorn, reload) and the web dev server together |
+| `make fetch`  | Re-downloads react.dev's docs into `api/corpus/`               |
+| `make ingest` | Cleans, chunks and embeds `api/corpus/` into `api/chroma/`     |
+| `make setup`  | `fetch` + `ingest`, for a fresh clone                          |
+| `make test`   | `pytest` + `ruff check` in `api/`                              |
 
 > [!TIP]
 > Ingestion is idempotent: chunk ids are `<corpus-relative-path>:<index>`, written with `upsert`. Shrinking a source file does leave its orphaned tail chunks behind, so delete `api/chroma/` when you want a guaranteed-clean rebuild.
@@ -108,8 +108,7 @@ Open **http://localhost:3000** and ask something.
   web/lib/chat-stream.ts    typed parser ──▶ use-chat.ts ──▶ app/page.tsx
 ```
 
-<details>
-<summary><b>📁 Project structure</b></summary>
+<b>📁 Project structure</b>
 
 <br />
 
@@ -140,8 +139,6 @@ docs/                demo recording + poster frame
 Makefile             dev / fetch / ingest / setup / test
 ```
 
-</details>
-
 ---
 
 ## 🔌 API
@@ -162,12 +159,12 @@ Base URL `http://localhost:8000`. CORS is open to `http://localhost:3000` only.
 
 Responds with `text/event-stream`:
 
-| Event | Data | When |
-| :--- | :--- | :--- |
+| Event     | Data                                                    | When                   |
+| :-------- | :------------------------------------------------------ | :--------------------- |
 | `sources` | Array of hits: `text`, `source`, `position`, `distance` | Once, before any token |
-| `token` | One delta of the answer | Repeatedly |
-| `error` | A safe message; the real error is logged server-side | On stream failure |
-| `done` | `[DONE]` | Always last |
+| `token`   | One delta of the answer                                 | Repeatedly             |
+| `error`   | A safe message; the real error is logged server-side    | On stream failure      |
+| `done`    | `[DONE]`                                                | Always last            |
 
 ```sh
 curl -N http://localhost:8000/chat/stream \
@@ -182,21 +179,21 @@ curl -N http://localhost:8000/chat/stream \
 
 ## ⚙️ Configuration
 
-| Variable | Where | Purpose |
-| :--- | :--- | :--- |
-| `OPENROUTER_API_KEY` | `api/.env` *(gitignored)* | **Required.** Used for embeddings and for chat completions |
-| `NEXT_PUBLIC_API_BASE_URL` | `web/.env.local` | API origin; defaults to `http://localhost:8000` |
+| Variable                   | Where                     | Purpose                                                    |
+| :------------------------- | :------------------------ | :--------------------------------------------------------- |
+| `OPENROUTER_API_KEY`       | `api/.env` _(gitignored)_ | **Required.** Used for embeddings and for chat completions |
+| `NEXT_PUBLIC_API_BASE_URL` | `web/.env.local`          | API origin; defaults to `http://localhost:8000`            |
 
 Models and retrieval knobs live in code:
 
-| Setting | Value | Where |
-| :--- | :--- | :--- |
-| Embedding model | `openai/text-embedding-3-small` | `rag/embeddings.py` |
-| Chat model | `anthropic/claude-haiku-4.5` | `rag/main.py` |
-| Max output tokens | `800` | `rag/main.py` |
-| Chunk size / overlap | `400` / `50` chars | `rag/store.ingest` |
-| Default `k` | `4` (API), `3` (`search()`) | `rag/main.py`, `rag/store.py` |
-| Distance metric | cosine | `rag/store.get_collection` |
+| Setting              | Value                           | Where                         |
+| :------------------- | :------------------------------ | :---------------------------- |
+| Embedding model      | `openai/text-embedding-3-small` | `rag/embeddings.py`           |
+| Chat model           | `anthropic/claude-haiku-4.5`    | `rag/main.py`                 |
+| Max output tokens    | `800`                           | `rag/main.py`                 |
+| Chunk size / overlap | `400` / `50` chars              | `rag/store.ingest`            |
+| Default `k`          | `4` (API), `3` (`search()`)     | `rag/main.py`, `rag/store.py` |
+| Distance metric      | cosine                          | `rag/store.get_collection`    |
 
 ---
 
@@ -214,7 +211,7 @@ Only 2 of 222 files have an h1. Unless the frontmatter title is promoted into on
 <details>
 <summary><b>Doc-site components are stripped, code is not</b></summary>
 
-297 distinct capitalised tags appear *inside* code fences as React examples. Only a closed list of chrome components (`<Note>`, `<Pitfall>`, `<Sandpack>`, …) gets removed, and only outside fences. The tag is dropped but the body it wraps stays, because that body is usually the caveat people are asking about.
+297 distinct capitalised tags appear _inside_ code fences as React examples. Only a closed list of chrome components (`<Note>`, `<Pitfall>`, `<Sandpack>`, …) gets removed, and only outside fences. The tag is dropped but the body it wraps stays, because that body is usually the caveat people are asking about.
 
 </details>
 
