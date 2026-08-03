@@ -1,0 +1,61 @@
+#!/bin/sh
+# Runs the checks for the project you actually touched: an api-only commit
+# never pays for npm, and a web-only commit never starts a Python process.
+#
+# Install once per clone (or run `make hooks`):
+#   git config core.hooksPath .githooks
+#
+# Caveat worth knowing: the suites run against the working tree, not the
+# index. A commit of `git add -p` partial hunks is checked as the files
+# currently read on disk. Use --no-verify when that distinction bites.
+#
+# POSIX sh on purpose -- macOS still ships bash 3.2, which has no mapfile.
+set -u
+
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+# Newline-separated, project prefix stripped. Paths with spaces would split
+# here; none exist in this repo and a doc file is not worth the ceremony.
+staged() {
+  project=$1
+  shift
+  git diff --cached --name-only --diff-filter=ACMR -- "$@" | sed "s|^$project/||"
+}
+
+status=0
+
+fail() {
+  echo "pre-commit: $1 failed" >&2
+  status=1
+}
+
+# --- api ---------------------------------------------------------------------
+if [ -n "$(staged api 'api/')" ]; then
+  # Lint only the staged files; the rest of the tree is not this commit's
+  # problem. The suite, by contrast, is whole-project by nature: a constants
+  # change breaks tests in files it never touches. It needs no key and runs
+  # in well under a second.
+  py=$(staged api 'api/*.py')
+  if [ -n "$py" ]; then
+    # shellcheck disable=SC2086 # deliberate word splitting into an arg list
+    (cd api && uv run ruff check $py) || fail "ruff check"
+  fi
+  (cd api && uv run pytest -q) || fail "pytest"
+fi
+
+# --- web ---------------------------------------------------------------------
+if [ -n "$(staged web 'web/')" ]; then
+  ts=$(staged web 'web/*.ts' 'web/*.tsx')
+  if [ -n "$ts" ]; then
+    # shellcheck disable=SC2086
+    (cd web && npx eslint $ts) || fail "eslint"
+  fi
+  (cd web && npx tsc --noEmit) || fail "tsc"
+  (cd web && npx vitest run) || fail "vitest"
+fi
+
+if [ "$status" -ne 0 ]; then
+  echo "pre-commit: commit aborted. re-run with --no-verify to bypass." >&2
+fi
+
+exit "$status"

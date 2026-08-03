@@ -8,7 +8,11 @@ fetch:                     # rarely. only when you want newer docs
 ingest:                    # when the corpus changes. costs money
 	cd api && uv run python -m rag.ingest corpus
 
-setup: fetch ingest        # one command for a fresh clone
+hooks:                     # lint and test what you touched, before it lands
+	git config core.hooksPath .githooks
+	@echo "pre-commit hook enabled"
+
+setup: fetch ingest hooks  # one command for a fresh clone
 	@echo "ready. now run: make dev"
 
 test:                      # both suites. neither needs a key or the network
