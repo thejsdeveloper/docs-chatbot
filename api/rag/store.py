@@ -25,10 +25,6 @@ class Hit(BaseModel):
     position: int
     distance: float
 
-    @property
-    def similarity(self) -> float:
-        return 1.0 - self.distance
-
 
 def get_collection() -> chromadb.Collection:
     """Open (once) and return the collection. Called from lifespan"""
@@ -94,5 +90,9 @@ def search(
             source=str(meta["source"]),
             position=int(meta["position"]),  # type: ignore[arg-type]
         )
-        for doc, meta, dist in zip(documents[0], metadatas[0], distances[0])
+        # strict: Chroma returns three parallel lists. A length mismatch would
+        # silently truncate the hits, so raise instead.
+        for doc, meta, dist in zip(
+            documents[0], metadatas[0], distances[0], strict=True
+        )
     ]

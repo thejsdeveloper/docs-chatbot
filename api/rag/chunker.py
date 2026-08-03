@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 
 from langchain_core.documents import Document
@@ -10,7 +11,7 @@ from rag.clean import clean_markdown
 from rag.constants import CHUNK_OVERLAP, CHUNK_SIZE, HEADERS_TO_SPLIT_ON
 
 
-def getSections(text: str):
+def _get_sections(text: str) -> list[Document]:
     markdown_header_splitter = MarkdownHeaderTextSplitter(
         headers_to_split_on=HEADERS_TO_SPLIT_ON,
         strip_headers=True,
@@ -22,7 +23,7 @@ def getSections(text: str):
 def chunk_markdown(
     text: str, size: int = CHUNK_SIZE, overlap: int = CHUNK_OVERLAP
 ) -> list[str]:
-    sections = getSections(clean_markdown(text))
+    sections = _get_sections(clean_markdown(text))
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=size, chunk_overlap=overlap
     )
@@ -36,7 +37,9 @@ def _with_heading(doc: Document) -> str:
 
 
 if __name__ == "__main__":
-    path = Path("corpus/releases.md")
+    if len(sys.argv) != 2:
+        sys.exit("usage: python -m rag.chunker <markdown-file>")
+    path = Path(sys.argv[1])
     chunks = chunk_markdown(path.read_text())
     for chunk in chunks:
         print(chunk)

@@ -101,9 +101,9 @@ def test_empty_document_writes_nothing(tmp_path, collection):
     assert collection.count() == 0
 
 
-def test_similarity_inverts_distance(collection):
-    """The UI ranks on `similarity`; an identical vector must score ~1.0 while
-    an orthogonal one lands near 0.0."""
+def test_search_orders_by_distance(collection):
+    """Hits come back best-first, which is what the sources panel relies on:
+    an identical vector must score ~0.0 cosine distance, an orthogonal one ~1.0."""
     collection.add(
         ids=["a:0", "b:0"],
         embeddings=[VECTORS["alpha"], VECTORS["beta"]],
@@ -117,5 +117,5 @@ def test_similarity_inverts_distance(collection):
     best, worst = store.search("alpha", k=2, collection=collection)
 
     assert best.source == "a.md"
-    assert best.similarity == pytest.approx(1.0, abs=1e-6)
-    assert worst.similarity == pytest.approx(0.0, abs=1e-6)
+    assert best.distance == pytest.approx(0.0, abs=1e-6)
+    assert worst.distance == pytest.approx(1.0, abs=1e-6)
