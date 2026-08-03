@@ -69,7 +69,12 @@ export function useChat() {
           }
         }
       } catch (err) {
-        if (!(err instanceof DOMException && err.name === "AbortError")) {
+        if (err instanceof DOMException && err.name === "AbortError") {
+          // Stopping is the user's own choice, so it is not an error -- but
+          // `done` never arrives either, and leaving the status set would
+          // animate the bubble forever. Settle on the text that did land.
+          updateAssistant(assistantId, { status: undefined });
+        } else {
           updateAssistant(assistantId, {
             status: "error",
             error: err instanceof Error ? err.message : "Something went wrong.",
