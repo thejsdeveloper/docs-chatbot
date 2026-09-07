@@ -15,7 +15,8 @@
       "Bash(uv run *)",
       "WebSearch",
       "Bash(npx tsc *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(PYTHONPATH=. uv run *)"
     ]
   }
 }
