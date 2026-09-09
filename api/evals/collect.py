@@ -11,12 +11,14 @@ TRACES = Path(__file__).parent / "traces.jsonl"
 
 def run_one(qid: str, question: str) -> dict:
     hits = search(question, k=5)
+    chunks = [h.text for h in hits]
     answer = complete(SYSTEM, build_prompt(question, [h.text for h in hits]))
     return {
         "id": qid,
         "question": question,
         "answer": answer,
         "sources": [f"{h.source}#{h.position}" for h in hits],
+        "chunks": chunks,
     }
 
 

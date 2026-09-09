@@ -1,0 +1,30 @@
+{"trace_id":"q01","verdict":"pass","note":"code example is correct and clearly explains what does cleanup function do","code":null}
+{"trace_id":"q02","verdict":"pass","note":"correctly answers with correct sources","code":null}
+{"trace_id":"q03","verdict":"fail","note":"correctly answers however explaination is not proper. may be context issue","code":"severed_context"}
+{"trace_id":"q04","verdict":"pass","note":"correct explaination","code":null}
+{"trace_id":"q05","verdict":"pass","note":"correct answer","code":null}
+{"trace_id":"q06","verdict":"pass","note":"correct explanation with correct references","code":null}
+{"trace_id":"q07","verdict":"fail","note":"explanation is correct with correct sources however it should also have source for keys","code":"missed_answer"}
+{"trace_id":"q08","verdict":"pass","note":"correct answer and sources","code":null}
+{"trace_id":"q09","verdict":"pass","note":"correct code example with sources","code":null}
+{"trace_id":"q10","verdict":"pass","note":"correct explanation with sources","code":null}
+{"trace_id":"q11","verdict":"fail","note":"correct sources however code example is missing","code":"severed_context"}
+{"trace_id":"q12","verdict":"pass","note":"correct exaple with correct context","code":null}
+{"trace_id":"q13","verdict":"fail","note":"corect however code example can be improved","code":"severed_context"}
+{"trace_id":"q14","verdict":"fail","note":"good exaplanation however code example is missing","code":"severed_context"}
+{"trace_id":"q15","verdict":"fail","note":"exaplaination is good however code is missing","code":"severed_context"}
+{"trace_id":"q16","verdict":"fail","note":"good exaplaination however no code example","code":"severed_context"}
+{"trace_id":"q17","verdict":"fail","note":"no answer, answer exist however i think context is incorect","code":"missed_answer"}
+{"trace_id":"q18","verdict":"pass","note":"correct explaination can be more in depth","code":null}
+{"trace_id":"q19","verdict":"pass","note":"correct explaination with correct examples","code":null}
+{"trace_id":"q20","verdict":"fail","note":"exaplanation is very surface level may be context is not proper . no code example given","code":"severed_context"}
+{"trace_id":"q21","verdict":"pass","note":"good explanation","code":null}
+{"trace_id":"q22","verdict":"fail","note":"only surface level information. may be context is not sufficient","code":"severed_context"}
+{"trace_id":"q23","verdict":"pass","note":"this is great expalaination","code":null}
+{"trace_id":"q24","verdict":"fail","note":"good explanation however no code details probably insufficient context","code":"severed_context"}
+{"trace_id":"q25","verdict":"pass","note":"correct, do not have information to answer so answer is do not know","code":null}
+{"trace_id":"q26","verdict":"pass","note":"correct","code":null}
+{"trace_id":"q27","verdict":"pass","note":"great","code":null}
+{"trace_id":"q28","verdict":"pass","note":"good answer basedon context however no code examples","code":null}
+{"trace_id":"q29","verdict":"pass","note":"correct answer with code","code":null}
+{"trace_id":"q30","verdict":"fail","note":"answer is there however context ritrieved is wrong","code":"missed_answer"}

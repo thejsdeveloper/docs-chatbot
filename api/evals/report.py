@@ -21,6 +21,7 @@ class Annotation(BaseModel):
     verdict: Literal["pass", "fail"]
     note: str
     code: FailureCode | None = None
+    grounded: bool | None = None
 
 
 def load_annotations(path: Path = ANNOTATIONS) -> list[Annotation]:

@@ -69,11 +69,42 @@ def coding_pass() -> None:
     ANNOTATIONS.write_text("".join(r.model_dump_json() + "\n" for r in rows))
 
 
+def grounded_pass() -> None:
+    """Label the one property the judge will be built for, and nothing else."""
+    traces = {t["id"]: t for t in load_traces()}
+    rows = load_annotations()
+
+    for row in rows:
+        if row.grounded is not None:
+            continue
+        trace = traces[row.trace_id]
+        print("=" * 70)
+        print(f"{row.trace_id}\n\nQ: {trace['question']}\n")
+        print("CONTEXT THE MODEL WAS GIVEN:\n")
+        for chunk in trace.get("chunks", []):
+            print(chunk[:600] + "\n" + "-" * 30)
+        print(f"\nA: {trace['answer']}\n")
+        print("Is every claim in the answer supported by the context above?")
+
+        answer = ""
+        while answer not in ("y", "n"):
+            answer = input("grounded ? [y/n] (q to stop) : ").strip().lower()
+            if answer == "q":
+                break
+        if answer == "q":
+            break
+        row.grounded = answer == "y"
+
+    ANNOTATIONS.write_text("".join(r.model_dump_json() + "\n" for r in rows))
+
+
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "open"
     if mode == "open":
         open_pass()
     elif mode == "code":
         coding_pass()
+    elif mode == "ground":
+        grounded_pass()
     else:
         print("usage: uv run  python -m evals.annotate [open|code]")
