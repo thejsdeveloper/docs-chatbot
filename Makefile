@@ -18,3 +18,9 @@ setup: fetch ingest hooks  # one command for a fresh clone
 test:                      # both suites. neither needs a key or the network
 	cd api && uv run pytest && uv run ruff check . && uv run ruff format --check .
 	cd web && npm test
+
+evals: # the whole harness. costs money
+	cd api && uv run python -m evals.collect
+	cd api && uv run python -m evals.judge
+	cd api && uv run python -m evals.align
+	cd api && uv run pytest -q

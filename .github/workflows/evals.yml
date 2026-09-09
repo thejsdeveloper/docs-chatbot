@@ -1,0 +1,28 @@
+name: evals
+
+on:
+  pull_request:
+    paths: ["api/**"]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  checks:
+    name: deterministic checks (free)
+    runs-on: ubuntu-latest
+    env:
+      EVAL_MIN_PASS_RATE: "0.60"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - name: fetch the corpus
+        run: make fetch
+      - name: lint
+        working-directory: api
+        run: uv run ruff check .
+      - name: unit tests and eval suite
+        working-directory: api
+        run: uv run pytest -q
