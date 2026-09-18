@@ -128,4 +128,29 @@ GOLDEN: list[Golden] = [
         "When should I wrap a component in memo rather than calling useMemo inside it?",
         ("reference/react/memo.md",),
     ),
+    # --- comparison (4 more): questions that came up while building the chat UI.
+    Golden(
+        "g17",
+        "comparison",
+        "When appending streamed tokens, why pass an updater function to setState instead of the new value?",
+        ("learn/queueing-a-series-of-state-updates.md", "learn/state-as-a-snapshot.md"),
+    ),
+    Golden(
+        "g18",
+        "comparison",
+        "Should I use useEffectEvent or add the value to the effect's dependency array?",
+        ("learn/separating-events-from-effects.md", "reference/react/useEffectEvent.md"),
+    ),
+    Golden(
+        "g19",
+        "comparison",
+        "When should I use useSyncExternalStore instead of subscribing in useEffect and copying into state?",
+        ("reference/react/useSyncExternalStore.md",),
+    ),
+    Golden(
+        "g20",
+        "comparison",
+        "Should I keep the scroll position in a ref or in state when scrolling a chat to the bottom?",
+        ("learn/manipulating-the-dom-with-refs.md", "learn/referencing-values-with-refs.md"),
+    ),
 ]

@@ -45,7 +45,7 @@ def score_one(golden: Golden, k: int) -> dict:
 
 
 def summarise(rows: list[dict]) -> tuple[float, float]:
-    """recall@k and MMR over a group of rows. Both are plain averages"""
+    """recall@k and MRR over a group of rows. Both are plain averages"""
     if not rows:
         return 0.0, 0.0
     recall = sum(row["recall"] for row in rows) / len(rows)
