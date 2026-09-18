@@ -12,13 +12,15 @@ Rules, the same as `questions.py`:
 2. Wording is frozen once a run has been recorded against it.
 3. `relevant` holds `source` values exactly as `rag/store.py` writes them: the path
     relative to the corpus root, so "reference/react/use.md", not "use.md".
-4. `kind` splits the set into questions whose answer sits on one page and questions
-    that compare two things. Reporting the two separately is the point of the field.
+4. `kind` splits the set into questions whose answer sits on one page, questions
+    that compare two things, and questions phrased as a symptom ("why does X
+    happen?") where the page that answers them never uses the user's words.
+    Reporting the kinds separately is the point of the field.
 """
 
 from typing import Literal, NamedTuple
 
-GoldenKind = Literal["factual", "comparison"]
+GoldenKind = Literal["factual", "comparison", "symptom"]
 
 
 class Golden(NamedTuple):
@@ -152,5 +154,57 @@ GOLDEN: list[Golden] = [
         "comparison",
         "Should I keep the scroll position in a ref or in state when scrolling a chat to the bottom?",
         ("learn/manipulating-the-dom-with-refs.md", "learn/referencing-values-with-refs.md"),
+    ),
+    # --- symptom (8): the question describes what went wrong on screen, in the
+    # words a developer would use before they know the name of the concept. The
+    # answering page uses the concept's name and rarely the symptom's. Chosen
+    # because the first run missed or nearly missed each of them at k = 4.
+    Golden(
+        "g21",
+        "symptom",
+        "Why does a plain variable inside my component reset to zero every time?",
+        ("learn/state-a-components-memory.md",),
+    ),
+    Golden(
+        "g22",
+        "symptom",
+        "When I type quickly, the chat shows an answer for an earlier message. How do I stop that?",
+        ("learn/synchronizing-with-effects.md", "learn/you-might-not-need-an-effect.md"),
+    ),
+    Golden(
+        "g23",
+        "symptom",
+        "Why does the whole list re-render when I change one item's text?",
+        ("reference/react/memo.md",),
+    ),
+    Golden(
+        "g24",
+        "symptom",
+        "How do I stop the compiler from optimising one particular component?",
+        ("reference/react-compiler/directives/use-no-memo.md", "reference/react-compiler/directives.md"),
+    ),
+    Golden(
+        "g25",
+        "symptom",
+        "Why does my component render twice when I click once?",
+        ("reference/react/StrictMode.md", "learn/keeping-components-pure.md"),
+    ),
+    Golden(
+        "g26",
+        "symptom",
+        "After I add a message and scroll to the bottom, the scroll lands one message short. Why?",
+        ("learn/manipulating-the-dom-with-refs.md", "reference/react-dom/flushSync.md"),
+    ),
+    Golden(
+        "g27",
+        "symptom",
+        "Why does my accordion forget which panel was open when I toggle a parent boolean?",
+        ("learn/preserving-and-resetting-state.md",),
+    ),
+    Golden(
+        "g28",
+        "symptom",
+        "Why does my modal's typed text survive after I close and reopen it?",
+        ("learn/preserving-and-resetting-state.md",),
     ),
 ]
