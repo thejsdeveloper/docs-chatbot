@@ -2,22 +2,25 @@
 
 Run from `api/`:
 
-    uv run python -m evals.retrieval             # k = 4 and k = 20
-    uv run python -m evals.retrieval --k 4 8 20
+    uv run python -m evals.retrieval                    # dense, k = 4 and k = 20
+    uv run python -m evals.retrieval --mode hybrid --k 4
 
-Writes one JSON line per question per k to evals/retrieval.jsonl, overwriting it,
-so every run is directly comparable to the last.
+Writes one JSON line per question per k to evals/retrieval-<mode>.jsonl,
+overwriting it, so every run is directly comparable to the last run of the
+same mode, and the modes can be diffed against each other.
 """
 
 import argparse
 import json
 from collections import defaultdict
 from pathlib import Path
+from typing import get_args
 
 from evals.golden import GOLDEN, Golden
-from rag.store import Hit, search
+from rag.retrieve import Mode, retrieve
+from rag.store import Hit
 
-OUT = Path(__file__).parent / "retrieval.jsonl"
+OUT_DIR = Path(__file__).parent
 
 
 def first_relevant_rank(hits: list[Hit], relevant: tuple[str, ...]) -> int | None:
@@ -30,12 +33,13 @@ def first_relevant_rank(hits: list[Hit], relevant: tuple[str, ...]) -> int | Non
     return None
 
 
-def score_one(golden: Golden, k: int) -> dict:
-    hits = search(golden.text, k=k)
+def score_one(golden: Golden, k: int, mode: Mode) -> dict:
+    hits = retrieve(golden.text, k=k, mode=mode)
     rank = first_relevant_rank(hits, golden.relevant)
     return {
         "id": golden.id,
         "kind": golden.kind,
+        "mode": mode,
         "k": k,
         "rank": rank,
         "recall": 1 if rank else 0,
@@ -56,11 +60,12 @@ def summarise(rows: list[dict]) -> tuple[float, float]:
 def main() -> None:
     parser = argparse.ArgumentParser(description="score retrieval on the golden set")
     parser.add_argument("--k", type=int, nargs="+", default=[4, 20])
+    parser.add_argument("--mode", choices=get_args(Mode), default="dense")
     args = parser.parse_args()
 
     all_rows: list[dict] = []
     for k in args.k:
-        rows = [score_one(golden, k) for golden in GOLDEN]
+        rows = [score_one(golden, k, args.mode) for golden in GOLDEN]
         all_rows.extend(rows)
 
         by_kind: dict[str, list[dict]] = defaultdict(list)
@@ -68,7 +73,7 @@ def main() -> None:
             by_kind[row["kind"]].append(row)
 
         recall, mrr = summarise(rows)
-        print(f"\nk = {k}")
+        print(f"\nmode = {args.mode}   k = {k}")
         print(
             f"  overall      recall@{k} {recall:.2f}   MRR {mrr:.2f}   (n={len(rows)})"
         )
@@ -85,10 +90,11 @@ def main() -> None:
         if missed:
             print(f"  missed:      {', '.join(missed)}")
 
-    with OUT.open("w") as file:
+    out = OUT_DIR / f"retrieval-{args.mode}.jsonl"
+    with out.open("w") as file:
         for row in all_rows:
             file.write(json.dumps(row) + "\n")
-    print(f"\nwrote {len(all_rows)} rows to {OUT}")
+    print(f"\nwrote {len(all_rows)} rows to {out}")
 
 
 if __name__ == "__main__":

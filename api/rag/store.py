@@ -23,7 +23,9 @@ class Hit(BaseModel):
     text: str
     source: str
     position: int
-    distance: float
+    # Cosine distance for a dense hit. A BM25 hit has a score on a different
+    # scale, so it carries None rather than a number that looks comparable.
+    distance: float | None = None
 
 
 def get_collection() -> chromadb.Collection:

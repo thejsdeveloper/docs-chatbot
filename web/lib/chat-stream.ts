@@ -2,7 +2,7 @@ export interface SourceHit {
   text: string;
   source: string;
   position: number;
-  distance: number;
+  distance: number | null;
 }
 
 export type ChatStreamEvent =
@@ -13,7 +13,7 @@ export type ChatStreamEvent =
 
 /** Splits a raw SSE byte stream into { event, data } frames per the spec's blank-line delimiter. */
 async function* parseSseStream(
-  body: ReadableStream<Uint8Array>
+  body: ReadableStream<Uint8Array>,
 ): AsyncGenerator<{ event: string; data: string }> {
   const reader = body.getReader();
   const decoder = new TextDecoder();

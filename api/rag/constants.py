@@ -36,6 +36,12 @@ HEADERS_TO_SPLIT_ON = [
 DEFAULT_K = 3
 CHAT_K = 4
 
+# How many candidates each first-stage search returns before fusion and
+# reranking. Wide on purpose: a page at rank 40 is still in reach here, and
+# only the top CHAT_K survive to the prompt.
+CANDIDATE_K = 50
+RERANK_MODEL = "voyageai/rerank-2.5"
+
 # --- Ingestion --------------------------------------------------------------
 DEFAULT_CORPUS_DIR = "corpus"
 

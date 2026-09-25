@@ -17,7 +17,9 @@ from rag.constants import (
     MAX_OUTPUT_TOKENS,
     OPENROUTER_BASE_URL,
 )
-from rag.store import get_collection, search
+from rag.lexical import get_index
+from rag.retrieve import retrieve
+from rag.store import get_collection
 
 # Stated here rather than inherited from `rag.embeddings`' import side effect:
 # the key below is this module's dependency, so this module loads the .env.
@@ -45,6 +47,7 @@ def get_llm() -> AsyncOpenAI:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     resources["collection"] = get_collection()
+    get_index(resources["collection"])
     print(f"ready: {resources['collection'].count()} chunks")
     yield
     resources.clear()
@@ -72,7 +75,7 @@ async def health() -> dict:
 
 @app.post("/chat/stream", response_class=EventSourceResponse)
 async def chat_stream(req: Ask) -> AsyncIterable[ServerSentEvent]:
-    hits = search(question=req.question, k=req.k, collection=resources["collection"])
+    hits = retrieve(req.question, k=req.k, collection=resources["collection"])
     yield ServerSentEvent(data=[h.model_dump() for h in hits], event="sources")
     prompt = build_prompt(req.question, [h.text for h in hits])
 

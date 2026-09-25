@@ -16,7 +16,10 @@
       "WebSearch",
       "Bash(npx tsc *)",
       "Bash(npm run *)",
-      "Bash(PYTHONPATH=. uv run *)"
+      "Bash(PYTHONPATH=. uv run *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git stash *)"
     ]
   }
 }
