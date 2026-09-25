@@ -33,9 +33,7 @@ QUESTIONS: list[Question] = [
         "q01", "usage", "What does the cleanup function returned from useEffect do?"
     ),
     Question("q02", "usage", "When does React re-run an effect?"),
-    Question(
-        "q03", "usage", "Why does my effect run twice in development?", needs_code=True
-    ),
+    Question("q03", "usage", "Why does my effect run twice in development?"),
     Question(
         "q04",
         "usage",
@@ -52,13 +50,11 @@ QUESTIONS: list[Question] = [
         "q06",
         "usage",
         "Why is my state still the old value right after I call the setter?",
-        needs_code=True,
     ),
     Question(
         "q07",
         "usage",
         "When should I use a key on a list item, and what makes a good key?",
-        needs_code=True,
     ),
     Question(
         "q08",
@@ -78,7 +74,6 @@ QUESTIONS: list[Question] = [
         "q11",
         "ordinary",
         "What is the difference between props and state?",
-        needs_code=True,
     ),
     Question(
         "q12",
@@ -90,13 +85,11 @@ QUESTIONS: list[Question] = [
         "q13",
         "ordinary",
         "Why do I need curly braces to use JavaScript inside JSX?",
-        needs_code=True,
     ),
     Question(
         "q14",
         "ordinary",
         "What does it mean for a component to be pure?",
-        needs_code=True,
     ),
     Question(
         "q15",
@@ -108,7 +101,6 @@ QUESTIONS: list[Question] = [
         "q16",
         "ordinary",
         "When should I use useReducer instead of useState?",
-        needs_code=True,
     ),
     Question("q17", "ordinary", "How do I write a custom hook?", needs_code=True),
     Question(
@@ -122,9 +114,7 @@ QUESTIONS: list[Question] = [
         "How do I type component props in TypeScript?",
         needs_code=True,
     ),
-    Question(
-        "q20", "ordinary", "What does the 'use client' directive do?", needs_code=True
-    ),
+    Question("q20", "ordinary", "What does the 'use client' directive do?"),
     # --- multihop (4): the answer genuinely lives on two different pages
     Question(
         "q21",
@@ -137,7 +127,6 @@ QUESTIONS: list[Question] = [
         "multihop",
         "I am fetching data in useEffect. When is that the wrong tool, and what "
         "should I use instead?",
-        needs_code=True,
     ),
     Question(
         "q23",

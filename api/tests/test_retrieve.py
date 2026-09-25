@@ -42,7 +42,7 @@ def test_lexical_index_finds_exact_identifiers():
     }
     collection.add(
         ids=[f"{source}:0" for source in docs],
-        embeddings=[[1.0, 0.0]] * len(docs),
+        embeddings=[[1.0, 0.0]] * len(docs),  # type: ignore[arg-type]
         documents=list(docs.values()),
         metadatas=[{"source": source, "position": 0} for source in docs],
     )

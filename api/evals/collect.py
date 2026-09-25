@@ -4,13 +4,13 @@ from pathlib import Path
 from evals.llm import complete
 from evals.questions import active
 from rag.answer import SYSTEM, build_prompt
-from rag.store import search
+from rag.retrieve import retrieve
 
 TRACES = Path(__file__).parent / "traces.jsonl"
 
 
 def run_one(qid: str, question: str) -> dict:
-    hits = search(question, k=5)
+    hits = retrieve(question, k=5)
     chunks = [h.text for h in hits]
     answer = complete(SYSTEM, build_prompt(question, [h.text for h in hits]))
     return {

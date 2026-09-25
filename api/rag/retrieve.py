@@ -4,7 +4,6 @@ from typing import Literal
 
 import chromadb
 
-from rag import rerank
 from rag.constants import CANDIDATE_K
 from rag.fusion import rrf
 from rag.lexical import get_index

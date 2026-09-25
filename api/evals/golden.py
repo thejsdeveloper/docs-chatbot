@@ -141,7 +141,10 @@ GOLDEN: list[Golden] = [
         "g18",
         "comparison",
         "Should I use useEffectEvent or add the value to the effect's dependency array?",
-        ("learn/separating-events-from-effects.md", "reference/react/useEffectEvent.md"),
+        (
+            "learn/separating-events-from-effects.md",
+            "reference/react/useEffectEvent.md",
+        ),
     ),
     Golden(
         "g19",
@@ -153,7 +156,10 @@ GOLDEN: list[Golden] = [
         "g20",
         "comparison",
         "Should I keep the scroll position in a ref or in state when scrolling a chat to the bottom?",
-        ("learn/manipulating-the-dom-with-refs.md", "learn/referencing-values-with-refs.md"),
+        (
+            "learn/manipulating-the-dom-with-refs.md",
+            "learn/referencing-values-with-refs.md",
+        ),
     ),
     # --- symptom (8): the question describes what went wrong on screen, in the
     # words a developer would use before they know the name of the concept. The
@@ -169,7 +175,10 @@ GOLDEN: list[Golden] = [
         "g22",
         "symptom",
         "When I type quickly, the chat shows an answer for an earlier message. How do I stop that?",
-        ("learn/synchronizing-with-effects.md", "learn/you-might-not-need-an-effect.md"),
+        (
+            "learn/synchronizing-with-effects.md",
+            "learn/you-might-not-need-an-effect.md",
+        ),
     ),
     Golden(
         "g23",
@@ -181,7 +190,10 @@ GOLDEN: list[Golden] = [
         "g24",
         "symptom",
         "How do I stop the compiler from optimising one particular component?",
-        ("reference/react-compiler/directives/use-no-memo.md", "reference/react-compiler/directives.md"),
+        (
+            "reference/react-compiler/directives/use-no-memo.md",
+            "reference/react-compiler/directives.md",
+        ),
     ),
     Golden(
         "g25",
